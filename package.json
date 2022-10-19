@@ -79,7 +79,7 @@
     "vitest": "0.2.8"
   },
   "dependencies": {
-    "@docker/extension-api-client-types": "0.2.3",
+    "@docker/extension-api-client-types": "0.3.0",
     "@kubernetes/client-node": "^0.17.1",
     "@types/stream-json": "^1.7.2",
     "analytics-node": "^6.2.0",
