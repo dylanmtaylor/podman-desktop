@@ -31,7 +31,7 @@ async function createWindow() {
 
   const browserWindowConstructorOptions: BrowserWindowConstructorOptions = {
     show: false, // Use 'ready-to-show' event to show window
-    autoHideMenuBar: true, // This makes Podman Desktop look more like a native app on Linux
+    autoHideMenuBar: true, // This makes Podman Desktop look more like a native app
     width: INITIAL_APP_WIDTH,
     minWidth: INITIAL_APP_MIN_WIDTH,
     minHeight: INITIAL_APP_MIN_HEIGHT,
@@ -102,12 +102,24 @@ async function createWindow() {
   });
 
   browserWindow.on('close', e => {
-    if (!isLinux) {
+    const closeBehaviorConfiguration = global.configurationRegistry?.getConfiguration('preferences');
+    let minimizeonclose = !isLinux; // default value, which we will use unless the user preference is available.
+    if (typeof closeBehaviorConfiguration !== 'undefined') {
+      minimizeonclose = closeBehaviorConfiguration.get<boolean>('MinimizeToTrayOnClose') == true;
+    } else {
+      console.log('Configuration registry was undefined when window was closed. Using default behavior.');
+    }
+    console.log('Minimize on close: ' + minimizeonclose);
+
+    if (minimizeonclose) {
       e.preventDefault();
       browserWindow.hide();
       if (isMac) {
         app.dock.hide();
       }
+    } else {
+      browserWindow.destroy();
+      app.quit();
     }
   });
 
